@@ -28,38 +28,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "mp3serial_JQ8400TF.h"
 
 static uint8_t mp3Buffer[6] = {0};
-static uint8_t uart=0; // uart number
+static HardwareSerial uart = Serial;
 
 // public functions
 
 // Initialize Serial port and module
 mp3Serial::mp3Serial(void)
-	{uart=0;};
+	{uart=Serial;};
 	
-mp3Serial::mp3Serial(uint8_t serialport)
-	{serialport>3?uart=0:uart=serialport;};
+mp3Serial::mp3Serial(HardwareSerial serialport)
+	{uart=serialport;};
 	
 void mp3Serial::begin(void)
 	{
-	switch (uart)
-		{
-		case 0:
-			Serial.begin(9600);
-			break;
-		#if defined(AVR_LEONARDO) || defined(AVR_MEGA) || defined(AVR_MEGA2560)
-		case 1:
-			Serial1.begin(9600);
-			break;
-		#endif
-		#if defined(AVR_MEGA) || defined(AVR_MEGA2560)
-		case 2:
-			Serial2.begin(9600);
-			break;
-		case 3:
-			Serial3.begin(9600);
-			break;
-		#endif
-		}
+	uart.begin(9600);
 	delay(500);
 	write_2bytes(CMD_SEL_DEV,DEV_TF);
 	delay(200);
@@ -164,27 +146,9 @@ void mp3Serial::playFromFolder(uint8_t folder, uint8_t index)
 
 void mp3Serial::write_nBytes(uint8_t n)
 	{
-	for(uint8_t i=0; i<n; i++)//
+	for(uint8_t i=0; i<n; i++)
 		{
-		switch (uart)
-		{
-		case 0:
-			Serial.write(mp3Buffer[i]);
-			break;
-		#if defined(AVR_LEONARDO) || defined(AVR_MEGA) || defined(AVR_MEGA2560)
-		case 1:
-			Serial1.write(mp3Buffer[i]);
-			break;
-		#endif
-		#if defined(AVR_MEGA) || defined(AVR_MEGA2560)
-		case 2:
-			Serial2.write(mp3Buffer[i]);
-			break;
-		case 3:
-			Serial3.write(mp3Buffer[i]);
-			break;
-		#endif
-		}
+		uart.write(mp3Buffer[i]);
 		}
 	};
 	

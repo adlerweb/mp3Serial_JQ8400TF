@@ -74,7 +74,7 @@ class mp3Serial
 	{
 	public:
 		mp3Serial(void);
-		mp3Serial(uint8_t serialport);
+		mp3Serial(HardwareSerial serialport);
 	
 		void begin(void);
 		void play(void);
